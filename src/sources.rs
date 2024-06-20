@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 pub struct Sources {
 	pub settings_gradle_kts: String,
 	pub gradle_properties: String,
@@ -17,8 +15,9 @@ pub struct Sources {
 }
 
 impl Sources {
-	pub fn generate<T: Display>(app_name: T, package_name: T) -> Self {
-		let settings_gradle_kts = format!(r#"pluginManagement {{
+	pub fn generate(app_name: &str, package_name: &str) -> Self {
+        let app_name_nospace = app_name.replace(" ", "");
+        let settings_gradle_kts = format!(r#"pluginManagement {{
     repositories {{
         google {{
             content {{
@@ -152,14 +151,14 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 "#.to_string();
 
-		let android_manifest_xml = r#"<?xml version="1.0" encoding="utf-8"?>
+		let android_manifest_xml = format!(r#"<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication"
+        android:theme="@style/Theme.{app_name_nospace}"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
@@ -172,15 +171,15 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
         </activity>
     </application>
 
-</manifest>"#.to_string();
+</manifest>"#);
 
-		let resources_xml = r#"<?xml version="1.0" encoding="utf-8"?>
+		let resources_xml = format!(r#"<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Application</string>
-    <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar" />
-</resources>"#.to_string();
+    <string name="app_name">{app_name}</string>
+    <style name="Theme.{app_name_nospace}" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>"#);
 
-		let main_activity_kt = r#"package com.example.myapplication
+		let main_activity_kt = format!(r#"package {package_name}
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -192,34 +191,34 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import {package_name}.ui.theme.{app_name_nospace}Theme
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+class MainActivity : ComponentActivity() {{
+    override fun onCreate(savedInstanceState: Bundle?) {{
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        setContent {{
+            {app_name_nospace}Theme {{
+                Scaffold(modifier = Modifier.fillMaxSize()) {{ innerPadding ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                }
-            }
-        }
-    }
-}
+                }}
+            }}
+        }}
+    }}
+}}
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String, modifier: Modifier = Modifier) {{
     Text(
         text = "Hello $name from crafter!",
         modifier = modifier
     )
-}"#.to_string();
+}}"#);
 
-		let color_kt = r#"package com.example.myapplication.ui.theme
+		let color_kt = format!(r#"package {package_name}.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -229,9 +228,9 @@ val Pink80 = Color(0xFFEFB8C8)
 
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)"#.to_string();
+val Pink40 = Color(0xFF7D5260)"#);
 
-		let theme_kt = r#"package com.example.myapplication.ui.theme
+		let theme_kt = format!(r#"package {package_name}.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -267,30 +266,30 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun MyApplicationTheme(
+fun {app_name_nospace}Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+) {{
+    val colorScheme = when {{
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {{
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+        }}
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
-    }
+    }}
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
-}"#.to_string();
+}}"#);
 
-		let type_kt = r#"package com.example.myapplication.ui.theme
+		let type_kt = format!(r#"package {package_name}.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -323,7 +322,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
-)"#.to_string();
+)"#);
 
 		Self {
 			settings_gradle_kts,
