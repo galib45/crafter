@@ -32,9 +32,11 @@ adb install -d app/build/outputs/apk/debug/app-debug.apk
 This guide was last updated on 20 June 2024
 ### Setup JDK
 - Download JDK from [OpenJDK website](https://openjdk.org/), the latest version as of today is [here](https://jdk.java.net/22/). Extract the archive.
-  ```
-  unzip path\to\the\file.zip          // Windows
-  tar zxvf path/to/the/file.tar.gz    // Linux/MacOS
+  ```bash
+  # Windows
+  unzip path\to\the\file.zip
+  # Linux/MacOS
+  tar zxvf path/to/the/file.tar.gz
   ```
 - Now set the `JAVA_HOME` environment variable to the extracted directory.
 - Add `JAVA_HOME/bin` to `PATH`.
@@ -53,11 +55,10 @@ This guide was last updated on 20 June 2024
   ```
   sdkmanager --list | grep -E "build-tools|platform|platform-tools"
   ```
-  Choose the version for each of these and install them.
+  Choose the version for each of these and install them. You are required to accept the necessary license for each package you have installed. Platform 34 is for Android 14. Platform 35 has been released which is for Androi 15 but Androi 15 is still in beta.
   ```
-  sdkmanager "build-tools;34.0.0"
-  sdkmanager "platforms;android-34"
-  sdkmanager "platform-tools"
+  sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools"
+  sdkmanager --licenses 
   ```
 
 ### Setup Gradle
