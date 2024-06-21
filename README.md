@@ -24,8 +24,7 @@ crafter create "My App" com.example.myapp
 ```
 cd "My App"
 gradle wrapper
-./gradlew assembleDebug
-adb install -d app/build/outputs/apk/debug/app-debug.apk
+./gradlew installDebug
 ```
 
 ## Setup the android development environment
