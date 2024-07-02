@@ -23,8 +23,7 @@ crafter create "My App" com.example.myapp
 ### Build and install the app
 ```
 cd "My App"
-gradle wrapper
-./gradlew installDebug
+gradle installDebug
 ```
 
 ## Setup the android development environment
@@ -54,7 +53,7 @@ This guide was last updated on 20 June 2024
   ```
   sdkmanager --list | grep -E "build-tools|platform|platform-tools"
   ```
-  Choose the version for each of these and install them. You are required to accept the necessary license for each package you have installed. Platform 34 is for Android 14. Platform 35 has been released which is for Androi 15 but Androi 15 is still in beta.
+  Choose the version for each of these and install them. You are required to accept the necessary license for each package you have installed. Platform 34 is for Android 14. Platform 35 has been released which is for Android 15 but Android 15 is still in beta.
   ```
   sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools"
   sdkmanager --licenses 

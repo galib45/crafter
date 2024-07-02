@@ -71,11 +71,13 @@ android.nonTransitiveRClass=true"#.to_string();
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }".to_string();
 
 		let app_build_gradle_kts = format!(r#"plugins {{
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 }}
 
 android {{
@@ -131,7 +133,7 @@ dependencies {{
 
 		let libs_versions_toml = r#"[versions]
 agp = "8.5.0"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.10.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
@@ -149,6 +151,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 "#.to_string();
 
 		let android_manifest_xml = format!(r#"<?xml version="1.0" encoding="utf-8"?>
